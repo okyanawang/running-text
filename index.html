@@ -115,11 +115,10 @@
                 goodBtn.innerText = story[currentStep].goodText;
                 runawayBtn.innerText = story[currentStep].runText;
                 
-                // Reset to default side-by-side position
+                // Reset to side-by-side for the new question
                 runawayBtn.style.position = 'relative';
                 runawayBtn.style.top = '0';
                 runawayBtn.style.left = '0';
-                runawayBtn.style.margin = "0";
             } else {
                 questionEl.innerText = "Check your DMs again, Chan. I'm waiting for you! 🩵";
                 buttonContainer.style.display = 'none';
@@ -127,30 +126,36 @@
         }
 
         function moveButton(e) {
-            // Switch to absolute immediately when interaction starts
-            runawayBtn.style.position = 'absolute';
+            // Switch to fixed so it uses the browser window as its map
+            runawayBtn.style.position = 'fixed';
 
             const btnWidth = runawayBtn.offsetWidth;
             const btnHeight = runawayBtn.offsetHeight;
 
-            // Stay within visible viewport with 20px padding
-            const maxWidth = window.innerWidth - btnWidth - 20;
-            const maxHeight = window.innerHeight - btnHeight - 20;
+            // Keep 30px away from all edges so it's always visible
+            const padding = 30;
+            const maxWidth = window.innerWidth - btnWidth - padding;
+            const maxHeight = window.innerHeight - btnHeight - padding;
 
-            const randomX = Math.max(10, Math.floor(Math.random() * maxWidth));
-            const randomY = Math.max(10, Math.floor(Math.random() * maxHeight));
+            // Generate coordinates within the visible screen
+            let randomX = Math.floor(Math.random() * (maxWidth - padding)) + padding;
+            let randomY = Math.floor(Math.random() * (maxHeight - padding)) + padding;
 
             runawayBtn.style.left = randomX + 'px';
             runawayBtn.style.top = randomY + 'px';
         }
 
-        // Mouse for PC, Touch for Phone
+        // Interaction listeners
         runawayBtn.addEventListener('mouseover', moveButton);
         runawayBtn.addEventListener('touchstart', function(e) {
-            e.preventDefault(); // Prevents clicking the button on mobile
+            e.preventDefault(); // Essential for mobile!
             moveButton();
         });
-        runawayBtn.addEventListener('click', moveButton);
+        // Even if she manages to click, it moves
+        runawayBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            moveButton();
+        });
 
         goodBtn.addEventListener('click', function() {
             currentStep++;
