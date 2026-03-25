@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>For Nara 🩵</title>
     <style>
         body {
@@ -11,44 +11,51 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background-color: #e3f2fd; /* Biru muda background */
+            background-color: #e3f2fd; 
             font-family: 'Comic Sans MS', cursive, sans-serif;
             text-align: center;
-            overflow: hidden; 
+            overflow: hidden; /* Strictly no scrolling */
             margin: 0;
+            padding: 10px;
+            box-sizing: border-box;
         }
         h1 { 
-            color: #1976d2; /* Deep blue for the text */
-            margin-bottom: 30px;
-            padding: 0 20px;
+            color: #1976d2;
+            font-size: 1.5rem; /* Better for mobile */
+            margin-bottom: 20px;
             pointer-events: none;
         }
         .buttons {
             display: flex;
+            flex-wrap: wrap; /* Allows stacking if text is long */
             justify-content: center;
             align-items: center;
+            gap: 15px;
             width: 100%;
-            height: 100px;
+            height: 200px; /* Safe area for buttons to exist */
+            position: relative;
         }
         button {
-            padding: 12px 24px;
-            font-size: 18px;
+            padding: 10px 20px;
+            font-size: 16px;
             cursor: pointer;
             border: none;
             border-radius: 8px;
-            background-color: #90caf9; /* Soft blue */
+            background-color: #90caf9;
             color: #0d47a1;
             font-weight: bold;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.2s ease; 
+            transition: all 0.2s ease;
+            touch-action: manipulation; /* Optimizes for mobile tapping */
         }
         #good-btn {
-            z-index: 10;
-            background-color: #2196f3; /* Stronger blue for the 'correct' choice */
+            background-color: #2196f3;
             color: white;
+            position: relative;
+            z-index: 10;
         }
         #runaway-btn {
-            position: absolute;
+            position: relative; /* Starts relative, jumps to absolute on move */
             z-index: 5;
         }
     </style>
@@ -58,7 +65,7 @@
     <h1 id="question">Loading...</h1>
     <div class="buttons" id="button-container">
         <button id="good-btn"></button>
-        <button id="runaway-btn" style="margin-left: 200px;"></button>
+        <button id="runaway-btn"></button>
     </div>
 
     <script>
@@ -80,7 +87,7 @@
             },
             {
                 question: "Can I send you some flowers to say sorry, Al? 🌹",
-                goodText: "Okayyy, I'd like that, harus yang GEDE",
+                goodText: "Okayyy, I'd like that, GEDE ya!",
                 runText: "I don't want flowers! 🙅‍♀️"
             },
             {
@@ -108,32 +115,41 @@
                 goodBtn.innerText = story[currentStep].goodText;
                 runawayBtn.innerText = story[currentStep].runText;
                 
-                // Centering logic for the reset
-                runawayBtn.style.position = 'absolute';
-                runawayBtn.style.top = (window.innerHeight / 2) + "px";
-                runawayBtn.style.left = (window.innerWidth / 2 + 100) + "px";
+                // Reset to default side-by-side position
+                runawayBtn.style.position = 'relative';
+                runawayBtn.style.top = '0';
+                runawayBtn.style.left = '0';
+                runawayBtn.style.margin = "0";
             } else {
                 questionEl.innerText = "Check your DMs again, Chan. I'm waiting for you! 🩵";
                 buttonContainer.style.display = 'none';
             }
         }
 
-        function moveButton() {
+        function moveButton(e) {
+            // Switch to absolute immediately when interaction starts
+            runawayBtn.style.position = 'absolute';
+
             const btnWidth = runawayBtn.offsetWidth;
             const btnHeight = runawayBtn.offsetHeight;
 
+            // Stay within visible viewport with 20px padding
             const maxWidth = window.innerWidth - btnWidth - 20;
             const maxHeight = window.innerHeight - btnHeight - 20;
 
-            const randomX = Math.floor(Math.random() * maxWidth);
-            const randomY = Math.floor(Math.random() * maxHeight);
+            const randomX = Math.max(10, Math.floor(Math.random() * maxWidth));
+            const randomY = Math.max(10, Math.floor(Math.random() * maxHeight));
 
             runawayBtn.style.left = randomX + 'px';
             runawayBtn.style.top = randomY + 'px';
-            runawayBtn.style.margin = "0";
         }
 
+        // Mouse for PC, Touch for Phone
         runawayBtn.addEventListener('mouseover', moveButton);
+        runawayBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault(); // Prevents clicking the button on mobile
+            moveButton();
+        });
         runawayBtn.addEventListener('click', moveButton);
 
         goodBtn.addEventListener('click', function() {
