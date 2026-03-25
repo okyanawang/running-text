@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Nara 🩵</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #e3f2fd; /* Biru muda background */
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            overflow: hidden; 
+            margin: 0;
+        }
+        h1 { 
+            color: #1976d2; /* Deep blue for the text */
+            margin-bottom: 30px;
+            padding: 0 20px;
+            pointer-events: none;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #90caf9; /* Soft blue */
+            color: #0d47a1;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s ease; 
+        }
+        #good-btn {
+            z-index: 10;
+            background-color: #2196f3; /* Stronger blue for the 'correct' choice */
+            color: white;
+        }
+        #runaway-btn {
+            position: absolute;
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="question">Loading...</h1>
+    <div class="buttons" id="button-container">
+        <button id="good-btn"></button>
+        <button id="runaway-btn" style="margin-left: 200px;"></button>
+    </div>
+
+    <script>
+        const story = [
+            {
+                question: "Al, was your Eid holiday fun? 🌙",
+                goodText: "Yes, it was great! 😊",
+                runText: "No, it was boring 😤"
+            },
+            {
+                question: "Nara, are you angry at me? 🥺",
+                goodText: "No, I'm not anymore",
+                runText: "Yes, I'm still mad! 😡"
+            },
+            {
+                question: "Is it because I'm being annoying, Chan? :')",
+                goodText: "Maybe a little...",
+                runText: "You're VERY annoying! 😤"
+            },
+            {
+                question: "Can I send you some flowers to say sorry, Al? 🌹",
+                goodText: "Okay, I'd like that",
+                runText: "I don't want flowers! 🙅‍♀️"
+            },
+            {
+                question: "Do you miss talking to me even just 1%, Alycia? ✨",
+                goodText: "Yes, I miss you too",
+                runText: "Not even 0.0001% 💅"
+            },
+            {
+                question: "Can we start over and talk again? Please? 🩵",
+                goodText: "Yes, let's talk",
+                runText: "In your dreams! 🏃‍♀️"
+            }
+        ];
+
+        let currentStep = 0;
+
+        const questionEl = document.getElementById('question');
+        const goodBtn = document.getElementById('good-btn');
+        const runawayBtn = document.getElementById('runaway-btn');
+        const buttonContainer = document.getElementById('button-container');
+
+        function updatePage() {
+            if (currentStep < story.length) {
+                questionEl.innerText = story[currentStep].question;
+                goodBtn.innerText = story[currentStep].goodText;
+                runawayBtn.innerText = story[currentStep].runText;
+                
+                // Centering logic for the reset
+                runawayBtn.style.position = 'absolute';
+                runawayBtn.style.top = (window.innerHeight / 2) + "px";
+                runawayBtn.style.left = (window.innerWidth / 2 + 100) + "px";
+            } else {
+                questionEl.innerText = "Check your DMs again, Chan. I'm waiting for you! 🩵";
+                buttonContainer.style.display = 'none';
+            }
+        }
+
+        function moveButton() {
+            const btnWidth = runawayBtn.offsetWidth;
+            const btnHeight = runawayBtn.offsetHeight;
+
+            const maxWidth = window.innerWidth - btnWidth - 20;
+            const maxHeight = window.innerHeight - btnHeight - 20;
+
+            const randomX = Math.floor(Math.random() * maxWidth);
+            const randomY = Math.floor(Math.random() * maxHeight);
+
+            runawayBtn.style.left = randomX + 'px';
+            runawayBtn.style.top = randomY + 'px';
+            runawayBtn.style.margin = "0";
+        }
+
+        runawayBtn.addEventListener('mouseover', moveButton);
+        runawayBtn.addEventListener('click', moveButton);
+
+        goodBtn.addEventListener('click', function() {
+            currentStep++;
+            updatePage();
+        });
+
+        window.onload = updatePage;
+    </script>
+</body>
+</html>
